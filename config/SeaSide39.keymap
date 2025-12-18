@@ -42,7 +42,14 @@
 
     keymap {
         compatible = "zmk,keymap";
+#include <input/processors.dtsi>
 
+&trackball_listener {
+    scroller {
+        layers = <3>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
+    };
+};
         default_layer {
             bindings = <
 &kp Q       &kp W         &kp E             &kp R               &kp T                                         &kp Y        &kp U                &kp I              &kp O            &kp P
