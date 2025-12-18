@@ -1,5 +1,14 @@
 #include "SeaSide39.dtsi"
 
+/* Trackball listener (L側ダミー) */
+ / {
+    trackball_listener: trackball_listener {
+        compatible = "zmk,input-listener";
+        status = "disabled";
+    };
+};
+
+
 &kscan0 {
         col-gpios
             = <&xiao_d 10 GPIO_ACTIVE_HIGH>
