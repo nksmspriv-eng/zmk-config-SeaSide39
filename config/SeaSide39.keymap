@@ -1,3 +1,26 @@
+ご提示いただいた `.keymap` ファイルをベースに、**iPad接続時用のレイヤー構成を追加したコード**を作成しました。
+
+### 変更・対応のポイント
+
+1. **iPad用レイヤー（`IPAD_DEFAULT`, `IPAD_SYMBOL`, `IPAD_NUM`）の追加**
+* iPadOSがキーボードを「JISキーボード」として誤認識することを見越し、iPad用レイヤーでは `JP_AT` などのJIS変換用マクロを使わず、**標準のUSキーコード（`AT` や `COLON` 等）を直接出力**するように設定しました。
+* これにより、PC（PC用JIS定義）でもiPadでも**全く同じ操作感・キー配置で印字通りの記号入力が可能**になります。
+
+
+2. **接続切替 兼 レヤー切替マクロの追加**
+* マクロ `to_pc`（BT 0 + PCレイヤー）と `to_ipad`（BT 1 + iPadレイヤー）を追加しました。
+
+
+3. **MOUSEレイヤー（Bluetooth設定）への割り当て**
+* `MOUSE` レイヤー（レイヤー4）の `BT_SEL 0` を押すと **PC接続＋PC用レイヤー0** に切り替わり、`BT_SEL 1` を押すと **iPad接続＋iPad用レイヤー7（IPAD_DEFAULT）** に一発で切り替わるように設定しました。
+
+
+
+---
+
+### 修正後の `.keymap` 全体コード
+
+```dts
 #include <input/processors.dtsi>
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
@@ -9,8 +32,7 @@
 #define SCROLL 5
 #define NUM 6
 
-//以下USキーボードのままJISキーボードとして使うための定義　https://note.com/kloir_z/n/n314e739f03a1
-
+// 以下USキーボードのままJISキーボードとして使うための定義
 #define JP_DQUOTE       AT                // "
 #define JP_AMPERSAND    CARET             // &
 #define JP_QUOTE        AMPERSAND         // '
@@ -55,6 +77,22 @@
             bindings = <&to 0 &macro_param_1to1 &kp MACRO_PLACEHOLDER>;
             label = "TO_LAYER_0";
         };
+
+        // PC用接続切替マクロ (BT0に切り替えて レイヤー0 へ)
+        to_pc: to_pc {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_SEL 0 &to 0>;
+            label = "TO_PC";
+        };
+
+        // iPad用接続切替マクロ (BT1に切り替えて IPAD_DEFAULTレイヤー7 へ)
+        to_ipad: to_ipad {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_SEL 1 &to 7>;
+            label = "TO_IPAD";
+        };
     };
 
     behaviors {
@@ -71,6 +109,9 @@
     keymap {
         compatible = "zmk,keymap";
 
+        // ====================================================
+        // レイヤー 0: PC用 DEFAULT
+        // ====================================================
         default_layer {
             bindings = <
 &kp Q       &kp W         &kp E             &kp R               &kp T                                           &kp Y        &kp U                &kp I              &kp O            &kp P
@@ -82,6 +123,9 @@
             sensor-bindings = <&inc_dec_kp PG_UP PAGE_DOWN>;
         };
 
+        // ====================================================
+        // レイヤー 1: PC用 SYMBOL
+        // ====================================================
         SYMBOL {
             bindings = <
 &kp EXCLAMATION   &kp JP_DQUOTE  &kp HASH          &kp DOLLAR       &kp PERCENT                       &kp JP_CARET  &kp JP_TILDE  &kp JP_PIPE  &kp JP_BACKQUOTE  &kp F5
@@ -91,6 +135,9 @@
             >;
         };
 
+        // ====================================================
+        // レイヤー 2: PC用 NUM
+        // ====================================================
         NUM {
             bindings = <
 &kp NUMBER_1       &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_4  &kp N5                          &kp NUMBER_6      &kp N7       &kp N8     &kp N9           &kp N0
@@ -100,6 +147,9 @@
             >;
         };
 
+        // ====================================================
+        // レイヤー 3: ARROW (共通)
+        // ====================================================
         ARROW {
             bindings = <
 &kp ESCAPE      &mkp MB4                &kp UP_ARROW    &mkp MB5                 &trans                       &kp F1   &kp F2   &kp F3         &kp F4                   &kp F5
@@ -111,15 +161,21 @@
             sensor-bindings = <&inc_dec_kp LC(PAGE_UP) LC(PAGE_DOWN)>;
         };
 
+        // ====================================================
+        // レイヤー 4: MOUSE (BT切替マクロに割り当て変更)
+        // ====================================================
         MOUSE {
             bindings = <
-&bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4                      &bt BT_CLR  &trans    &trans    &trans    &trans
+&to_pc        &to_ipad      &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4                      &bt BT_CLR  &trans    &trans    &trans    &trans
 &trans        &trans        &trans        &trans        &trans                            &trans      &mkp MB1  &mkp MB3  &mkp MB2  &trans
 &trans        &trans        &trans        &trans        &trans                            &trans      &trans    &trans    &trans    &trans
 &bootloader   &trans        &trans        &trans        &trans        &trans      &trans  &trans                                &trans
             >;
         };
 
+        // ====================================================
+        // レイヤー 5: SCROLL (共通)
+        // ====================================================
         SCROLL {
             bindings = <
 &trans  &trans  &kp ENTER  &trans  &trans                                            &trans            &trans  &trans  &trans  &trans
@@ -129,18 +185,59 @@
             >;
         };
 
+        // ====================================================
+        // レイヤー 6: CONFIG (共通)
+        // ====================================================
         CONFIG {
             bindings = <
 &bt BT_CLR_ALL  &bt BT_CLR    &trans        &trans        &trans                            &trans       &trans  &trans  &trans  &trans
 &trans          &trans        &trans        &trans        &trans                            &trans       &trans  &trans  &trans  &trans
-&bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4                      &bootloader  &trans  &trans  &trans  &trans
+&to_pc          &to_ipad      &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4                      &bootloader  &trans  &trans  &trans  &trans
 &trans          &trans        &trans        &trans        &trans        &trans      &trans  &trans                               &trans
+            >;
+        };
+
+        // ====================================================
+        // レイヤー 7: iPad用 DEFAULT (iPad用SYMBOL・NUMへ遷移)
+        // ====================================================
+        IPAD_DEFAULT {
+            bindings = <
+&kp Q       &kp W         &kp E             &kp R               &kp T                                           &kp Y        &kp U                &kp I              &kp O            &kp P
+&kp A       &mt LALT S    &mt LEFT_SHIFT D  &mt LEFT_CONTROL F  &kp G                                           &kp H        &mt RIGHT_CONTROL J  &mt RIGHT_SHIFT K  &mt RIGHT_ALT L  &kp MINUS
+&kp Z       &kp X         &kp C             &kp V               &kp B                                           &kp N        &kp M                &kp COMMA          &kp PERIOD       &kp SLASH
+&kp ESCAPE  &kp LEFT_GUI  &kp TAB           &kp GRAVE           &lt 8 SPACE  &lt 3 BACKSPACE      &lt 3 DELETE  &lt 9 ENTER                                                           &lt 4 RC(SPACE)
+            >;
+
+            sensor-bindings = <&inc_dec_kp PG_UP PAGE_DOWN>;
+        };
+
+        // ====================================================
+        // レイヤー 8: iPad用 SYMBOL (標準USキーコードを出力)
+        // ====================================================
+        IPAD_SYMBOL {
+            bindings = <
+&kp EXCLAMATION  &kp DOUBLE_QUOTES  &kp HASH          &kp DOLLAR       &kp PERCENT                       &kp CARET  &kp TILDE  &kp PIPE  &kp GRAVE  &kp F5
+&kp AMPERSAND    &kp SINGLE_QUOTE   &kp LEFT_PARENTHESIS &kp RIGHT_PARENTHESIS &kp AT                   &kp F6     &mkp LCLK  &mkp MCLK  &mkp RCLK  &kp F7
+&kp SEMICOLON    &kp COLON          &kp LEFT_BRACKET  &kp RIGHT_BRACKET &kp QUESTION                     &mkp MB4   &mkp MB5   &kp F8    &kp F9     &kp F10
+&trans           &kp LESS_THAN      &kp GREATER_THAN  &trans           &trans        &trans      &trans  &trans                                    &trans
+            >;
+        };
+
+        // ====================================================
+        // レイヤー 9: iPad用 NUM (標準USキーコードを出力)
+        // ====================================================
+        IPAD_NUM {
+            bindings = <
+&kp NUMBER_1   &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_4  &kp N5                          &kp NUMBER_6      &kp N7       &kp N8     &kp N9           &kp N0
+&kp UNDERSCORE &kp LEFT      &kp UP        &kp RIGHT     &kp INTERNATIONAL_3             &kp EQUAL         &kp PLUS     &kp MINUS  &kp ASTERISK     &kp SLASH
+&kp QMARK      &kp F1        &kp DOWN      &kp F3        &kp F4                          &kp RC(NUMBER_1)  &kp RC(V)    &kp RC(X)  &kp RC(S)        &kp RC(COLON)
+&trans         &trans        &trans        &trans        &trans      &trans      &trans  &trans                                                     &kp PRINTSCREEN
             >;
         };
     };
 };
 
-//レイヤー3をトラックボールのスクロールレイヤーとする
+// レイヤー3をトラックボールのスクロールレイヤーとする
 &trackball_listener {
     scroller {
         layers = <3>;
@@ -148,7 +245,7 @@
     };
 };
 
-//スクロール量の変更
+// スクロール量の変更
 &trackball_listener {
     scroller {
         layers = <3>;
@@ -159,7 +256,7 @@
     };
 };
 
-//スクロールのY方向を反転
+// スクロールのY方向を反転
 &trackball_listener {
     scroller {
         layers = <3>;
@@ -169,3 +266,5 @@
         >;
     };
 };
+
+```
