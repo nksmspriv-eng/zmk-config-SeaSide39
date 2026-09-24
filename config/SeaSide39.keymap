@@ -58,14 +58,14 @@
         to_pc: to_pc {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 0>, <&to 0>;
+            bindings = <&bt BT_SEL 0 &to 0>;
             label = "TO_PC";
         };
 
         to_ipad: to_ipad {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 1>, <&to 7>;
+            bindings = <&bt BT_SEL 1 &to 7>;
             label = "TO_IPAD";
         };
     };
@@ -137,7 +137,7 @@
         };
 
         // ====================================================
-        // 4: MOUSE
+        // 4: MOUSE (BT切替マクロ)
         // ====================================================
         MOUSE {
             bindings = <
@@ -187,26 +187,26 @@
         };
 
         // ====================================================
-        // 8: iPad用 SYMBOL
+        // 8: iPad用 SYMBOL (元ファイルで動作実績のある標準表記のみ)
         // ====================================================
         IPAD_SYMBOL {
             bindings = <
-&kp EXCL        &kp LS(NUMBER_2) &kp HASH     &kp DOLLAR   &kp PERCENT                   &kp CARET  &kp AMPS   &kp PIPE  &kp GRAVE  &kp F5
-&kp AMPS        &kp SQT          &kp LPAR     &kp RPAR     &kp AT                        &kp F6     &mkp LCLK  &mkp MCLK &mkp RCLK  &kp F7
-&kp SEMI        &kp COLON        &kp LBKT     &kp RBKT     &kp QUESTION                  &mkp MB4   &mkp MB5   &kp F8    &kp F9     &kp F10
-&trans          &kp LESS_THAN    &kp GREATER_THAN &trans   &trans        &trans  &trans  &trans                                    &trans
+&kp EXCLAMATION   &kp DOUBLE_QUOTES &kp HASH          &kp DOLLAR       &kp PERCENT                       &kp EQUAL     &kp PLUS      &kp LS(0x89) &kp LEFT_BRACE    &kp F5
+&kp CARET         &kp AMPERSAND     &kp ASTERISK      &kp LEFT_PARENTHESIS &kp LEFT_BRACKET              &kp F6        &mkp LCLK     &mkp MCLK    &mkp RCLK         &kp F7
+&kp SINGLE_QUOTE  &kp COLON         &kp RIGHT_BRACKET &kp BACKSLASH    &kp QUESTION                      &mkp MB4      &mkp MB5      &kp F8       &kp F9            &kp F10
+&trans            &kp LESS_THAN     &kp GREATER_THAN  &trans           &trans        &trans      &trans  &trans                                                     &trans
             >;
         };
 
         // ====================================================
-        // 9: iPad用 NUM
+        // 9: iPad用 NUM (元ファイルで動作実績のある標準表記のみ)
         // ====================================================
         IPAD_NUM {
             bindings = <
-&kp NUMBER_1   &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_4  &kp N5                          &kp NUMBER_6      &kp N7       &kp N8     &kp N9           &kp N0
-&kp UNDER      &kp LEFT      &kp UP        &kp RIGHT     &kp non_us_backslash            &kp EQUAL         &kp PLUS     &kp MINUS  &kp ASTERISK     &kp SLASH
-&kp QMARK      &kp F1        &kp DOWN      &kp F3        &kp F4                          &kp RC(NUMBER_1)  &kp RC(V)    &kp RC(X)  &kp RC(S)        &kp RC(COLON)
-&trans         &trans        &trans        &trans        &trans      &trans      &trans  &trans                                                     &kp PRINTSCREEN
+&kp NUMBER_1       &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_4  &kp N5                          &kp NUMBER_6      &kp N7       &kp N8     &kp N9           &kp N0
+&kp LS(0x87)       &kp LEFT      &kp UP        &kp RIGHT     &kp 0x89                        &kp UNDER         &kp COLON    &kp MINUS  &kp DOUBLE_QUOTES &kp SLASH
+&kp QMARK          &kp F1        &kp DOWN      &kp F3        &kp F4                          &kp RC(NUMBER_1)  &kp RC(V)    &kp RC(X)  &kp RC(S)        &kp RC(COLON)
+&trans             &trans        &trans        &trans        &trans      &trans      &trans  &trans                                                     &kp PRINTSCREEN
             >;
         };
     };
