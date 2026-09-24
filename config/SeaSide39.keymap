@@ -1,26 +1,3 @@
-ご提示いただいた `.keymap` ファイルをベースに、**iPad接続時用のレイヤー構成を追加したコード**を作成しました。
-
-### 変更・対応のポイント
-
-1. **iPad用レイヤー（`IPAD_DEFAULT`, `IPAD_SYMBOL`, `IPAD_NUM`）の追加**
-* iPadOSがキーボードを「JISキーボード」として誤認識することを見越し、iPad用レイヤーでは `JP_AT` などのJIS変換用マクロを使わず、**標準のUSキーコード（`AT` や `COLON` 等）を直接出力**するように設定しました。
-* これにより、PC（PC用JIS定義）でもiPadでも**全く同じ操作感・キー配置で印字通りの記号入力が可能**になります。
-
-
-2. **接続切替 兼 レヤー切替マクロの追加**
-* マクロ `to_pc`（BT 0 + PCレイヤー）と `to_ipad`（BT 1 + iPadレイヤー）を追加しました。
-
-
-3. **MOUSEレイヤー（Bluetooth設定）への割り当て**
-* `MOUSE` レイヤー（レイヤー4）の `BT_SEL 0` を押すと **PC接続＋PC用レイヤー0** に切り替わり、`BT_SEL 1` を押すと **iPad接続＋iPad用レイヤー7（IPAD_DEFAULT）** に一発で切り替わるように設定しました。
-
-
-
----
-
-### 修正後の `.keymap` 全体コード
-
-```dts
 #include <input/processors.dtsi>
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
@@ -212,24 +189,24 @@
         };
 
         // ====================================================
-        // レイヤー 8: iPad用 SYMBOL (標準USキーコードを出力)
+        // レイヤー 8: iPad用 SYMBOL (修正版キーコード)
         // ====================================================
         IPAD_SYMBOL {
             bindings = <
-&kp EXCLAMATION  &kp DOUBLE_QUOTES  &kp HASH          &kp DOLLAR       &kp PERCENT                       &kp CARET  &kp TILDE  &kp PIPE  &kp GRAVE  &kp F5
-&kp AMPERSAND    &kp SINGLE_QUOTE   &kp LEFT_PARENTHESIS &kp RIGHT_PARENTHESIS &kp AT                   &kp F6     &mkp LCLK  &mkp MCLK  &mkp RCLK  &kp F7
-&kp SEMICOLON    &kp COLON          &kp LEFT_BRACKET  &kp RIGHT_BRACKET &kp QUESTION                     &mkp MB4   &mkp MB5   &kp F8    &kp F9     &kp F10
-&trans           &kp LESS_THAN      &kp GREATER_THAN  &trans           &trans        &trans      &trans  &trans                                    &trans
+&kp EXCLAMATION  &kp LS(N2)  &kp HASH          &kp DOLLAR       &kp PERCENT                       &kp CARET  &kp TILDE  &kp PIPE  &kp GRAVE  &kp F5
+&kp AMPERSAND    &kp SQT     &kp LPAR          &kp RPAR         &kp AT                            &kp F6     &mkp LCLK  &mkp MCLK  &mkp RCLK  &kp F7
+&kp SEMI         &kp COLON   &kp LBKT          &kp RBKT         &kp QUESTION                      &mkp MB4   &mkp MB5   &kp F8    &kp F9     &kp F10
+&trans           &kp LESS_THAN &kp GREATER_THAN &trans           &trans        &trans      &trans  &trans                                    &trans
             >;
         };
 
         // ====================================================
-        // レイヤー 9: iPad用 NUM (標準USキーコードを出力)
+        // レイヤー 9: iPad用 NUM (修正版キーコード)
         // ====================================================
         IPAD_NUM {
             bindings = <
 &kp NUMBER_1   &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_4  &kp N5                          &kp NUMBER_6      &kp N7       &kp N8     &kp N9           &kp N0
-&kp UNDERSCORE &kp LEFT      &kp UP        &kp RIGHT     &kp INTERNATIONAL_3             &kp EQUAL         &kp PLUS     &kp MINUS  &kp ASTERISK     &kp SLASH
+&kp UNDER      &kp LEFT      &kp UP        &kp RIGHT     &kp INT_RO                      &kp EQUAL         &kp PLUS     &kp MINUS  &kp ASTERISK     &kp SLASH
 &kp QMARK      &kp F1        &kp DOWN      &kp F3        &kp F4                          &kp RC(NUMBER_1)  &kp RC(V)    &kp RC(X)  &kp RC(S)        &kp RC(COLON)
 &trans         &trans        &trans        &trans        &trans      &trans      &trans  &trans                                                     &kp PRINTSCREEN
             >;
@@ -266,5 +243,3 @@
         >;
     };
 };
-
-```
