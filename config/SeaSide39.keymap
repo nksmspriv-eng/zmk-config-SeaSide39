@@ -55,19 +55,17 @@
             label = "TO_LAYER_0";
         };
 
-        // PC用接続切替マクロ (BT0に切り替えて レイヤー0 へ)
         to_pc: to_pc {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 0 &to 0>;
+            bindings = <&bt BT_SEL 0>, <&to 0>;
             label = "TO_PC";
         };
 
-        // iPad用接続切替マクロ (BT1に切り替えて IPAD_DEFAULTレイヤー7 へ)
         to_ipad: to_ipad {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 1 &to 7>;
+            bindings = <&bt BT_SEL 1>, <&to 7>;
             label = "TO_IPAD";
         };
     };
@@ -87,7 +85,7 @@
         compatible = "zmk,keymap";
 
         // ====================================================
-        // レイヤー 0: PC用 DEFAULT
+        // 0: PC用 DEFAULT
         // ====================================================
         default_layer {
             bindings = <
@@ -101,7 +99,7 @@
         };
 
         // ====================================================
-        // レイヤー 1: PC用 SYMBOL
+        // 1: PC用 SYMBOL
         // ====================================================
         SYMBOL {
             bindings = <
@@ -113,7 +111,7 @@
         };
 
         // ====================================================
-        // レイヤー 2: PC用 NUM
+        // 2: PC用 NUM
         // ====================================================
         NUM {
             bindings = <
@@ -125,7 +123,7 @@
         };
 
         // ====================================================
-        // レイヤー 3: ARROW (共通)
+        // 3: ARROW (共通)
         // ====================================================
         ARROW {
             bindings = <
@@ -139,7 +137,7 @@
         };
 
         // ====================================================
-        // レイヤー 4: MOUSE (BT切替マクロに割り当て変更)
+        // 4: MOUSE
         // ====================================================
         MOUSE {
             bindings = <
@@ -151,7 +149,7 @@
         };
 
         // ====================================================
-        // レイヤー 5: SCROLL (共通)
+        // 5: SCROLL (共通)
         // ====================================================
         SCROLL {
             bindings = <
@@ -163,7 +161,7 @@
         };
 
         // ====================================================
-        // レイヤー 6: CONFIG (共通)
+        // 6: CONFIG (共通)
         // ====================================================
         CONFIG {
             bindings = <
@@ -175,7 +173,7 @@
         };
 
         // ====================================================
-        // レイヤー 7: iPad用 DEFAULT (iPad用SYMBOL・NUMへ遷移)
+        // 7: iPad用 DEFAULT
         // ====================================================
         IPAD_DEFAULT {
             bindings = <
@@ -189,24 +187,24 @@
         };
 
         // ====================================================
-        // レイヤー 8: iPad用 SYMBOL (修正版キーコード)
+        // 8: iPad用 SYMBOL
         // ====================================================
         IPAD_SYMBOL {
             bindings = <
-&kp EXCLAMATION  &kp LS(N2)  &kp HASH          &kp DOLLAR       &kp PERCENT                       &kp CARET  &kp TILDE  &kp PIPE  &kp GRAVE  &kp F5
-&kp AMPERSAND    &kp SQT     &kp LPAR          &kp RPAR         &kp AT                            &kp F6     &mkp LCLK  &mkp MCLK  &mkp RCLK  &kp F7
-&kp SEMI         &kp COLON   &kp LBKT          &kp RBKT         &kp QUESTION                      &mkp MB4   &mkp MB5   &kp F8    &kp F9     &kp F10
-&trans           &kp LESS_THAN &kp GREATER_THAN &trans           &trans        &trans      &trans  &trans                                    &trans
+&kp EXCL        &kp LS(NUMBER_2) &kp HASH     &kp DOLLAR   &kp PERCENT                   &kp CARET  &kp AMPS   &kp PIPE  &kp GRAVE  &kp F5
+&kp AMPS        &kp SQT          &kp LPAR     &kp RPAR     &kp AT                        &kp F6     &mkp LCLK  &mkp MCLK &mkp RCLK  &kp F7
+&kp SEMI        &kp COLON        &kp LBKT     &kp RBKT     &kp QUESTION                  &mkp MB4   &mkp MB5   &kp F8    &kp F9     &kp F10
+&trans          &kp LESS_THAN    &kp GREATER_THAN &trans   &trans        &trans  &trans  &trans                                    &trans
             >;
         };
 
         // ====================================================
-        // レイヤー 9: iPad用 NUM (修正版キーコード)
+        // 9: iPad用 NUM
         // ====================================================
         IPAD_NUM {
             bindings = <
 &kp NUMBER_1   &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_4  &kp N5                          &kp NUMBER_6      &kp N7       &kp N8     &kp N9           &kp N0
-&kp UNDER      &kp LEFT      &kp UP        &kp RIGHT     &kp INT_RO                      &kp EQUAL         &kp PLUS     &kp MINUS  &kp ASTERISK     &kp SLASH
+&kp UNDER      &kp LEFT      &kp UP        &kp RIGHT     &kp non_us_backslash            &kp EQUAL         &kp PLUS     &kp MINUS  &kp ASTERISK     &kp SLASH
 &kp QMARK      &kp F1        &kp DOWN      &kp F3        &kp F4                          &kp RC(NUMBER_1)  &kp RC(V)    &kp RC(X)  &kp RC(S)        &kp RC(COLON)
 &trans         &trans        &trans        &trans        &trans      &trans      &trans  &trans                                                     &kp PRINTSCREEN
             >;
