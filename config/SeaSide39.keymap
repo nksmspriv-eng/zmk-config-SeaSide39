@@ -1,3 +1,12 @@
+// --- RGB LED Widget 用のエイリアス定義 ---
+/ {
+    aliases {
+        led-red = &led_red;
+        led-green = &led_green;
+        led-blue = &led_blue;
+    };
+};
+
 #include <input/processors.dtsi>
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
